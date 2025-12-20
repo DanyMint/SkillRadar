@@ -1,0 +1,12 @@
+[project]
+name = "skill-radar"
+version = "25.1.0"
+description = "SkillRadar generates a human-readable HTML report showing current job market demand for skills based on real vacancies."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "requests>=2.32.5",
+]
+
+[project.scripts]
+skillradar = "skillradar.cli.main:main"
