@@ -4,7 +4,8 @@ from requests.exceptions import ConnectionError, RequestException, Timeout
 
 class VacancyFetcher(ABC):
     @abstractmethod
-    def fetch(self, *, role:str, region:str, limit:int=1000) -> list[dict]:
+    
+    def fetch(self, *,search_query: str, region_id: int, total_vacancies: int) -> list[dict]:
         pass
 
 class RegionFetcher(ABC):
