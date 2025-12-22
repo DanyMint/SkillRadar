@@ -1,6 +1,7 @@
 from skillradar.core.fetch.hh import HHFetcher
 from skillradar.core.pipeline import Pipeline
 from skillradar.core.storage.local import LocalStorage
+from skillradar.core.normalize.hh import HhNormalizer
 
 
 def main():
@@ -11,7 +12,7 @@ def main():
     storage = LocalStorage()
 
     # 2. Внедрение зависимостей в Pipeline
-    pipeline = Pipeline(fetcher=fetcher, storage=storage)
+    pipeline = Pipeline(fetcher=fetcher, storage=storage, normalizer=HhNormalizer())
 
     # 3. Запуск pipeline с параметрами
     # В реальном приложении параметры придут из config
