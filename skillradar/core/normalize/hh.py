@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 from skillradar.core.normalize.base import BaseNormalizer
 from skillradar.core.normalize.models import NormalizedVacancy
 

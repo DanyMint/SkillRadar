@@ -3,6 +3,8 @@ from typing import Any, Dict, List, Optional
 import requests
 
 from .base import RegionFetcher, VacancyFetcher, fetch_exceptions
+from .models import RawVacancy
+
 
 BASE_URL = "https://api.hh.ru/"
 
@@ -22,7 +24,7 @@ class HHFetcher(VacancyFetcher):
         search_query: str,
         total_vacancies: int,
         region_id: Optional[int] = None,
-    ) -> List[Dict[str, Any]]:
+    ) -> List[RawVacancy]:
         """
         Собирает вакансии с HeadHunter API с учетом пагинации и обогащения.
 
@@ -32,7 +34,7 @@ class HHFetcher(VacancyFetcher):
             region_id: ID региона для поиска (опционально).
 
         Returns:
-            Список словарей, где каждый словарь представляет обогащенную вакансию.
+            Список объектов RawVacancy.
         """
         vacancies = []
         per_page = 100
@@ -76,18 +78,17 @@ class HHFetcher(VacancyFetcher):
         r.raise_for_status()
         return r.json()
 
-    def _parse_vacancy(self, details: Dict[str, Any]) -> Dict[str, Any]:
-        """Приводит детальную информацию о вакансии к нужной структуре."""
-        return {
-            "id": details.get("id"),
-            "name": details.get("name"),
-            "area": details.get("area"),
-            "published_at": details.get("published_at"),
-            "description": details.get("description"),
-            "branded_description": details.get("branded_description"),
-            "key_skills": [skill["name"] for skill in details.get("key_skills", [])],
-            "raw": details,
-        }
+    def _parse_vacancy(self, details: Dict[str, Any]) -> RawVacancy:
+        """Приводит детальную информацию о вакансии к нужной структуре RawVacancy."""
+        return RawVacancy(
+            id=details.get("id", ""),
+            name=details.get("name", ""),
+            description=details.get("description"),
+            branded_description=details.get("branded_description"),
+            key_skills=[skill["name"] for skill in details.get("key_skills", [])],
+            area=details.get("area"),
+        )
+
 
 
 class HHRegionFetcher(RegionFetcher):

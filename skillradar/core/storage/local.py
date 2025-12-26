@@ -1,6 +1,6 @@
 """Local file system storage implementation."""
 import json
-from dataclasses import asdict
+from dataclasses import asdict, is_dataclass
 from typing import Any, Dict, List, Union
 
 from ..normalize.models import NormalizedVacancy
@@ -26,6 +26,9 @@ class LocalStorage(Storage):
         """
         Saves a Python object as a JSON file in the raw data directory.
 
+        If the data is a list of dataclass objects, they are converted to
+        dictionaries before serialization.
+
         The method ensures the target directory exists before writing.
         Files are saved with UTF-8 encoding and without escaping non-ASCII chars.
 
@@ -36,8 +39,14 @@ class LocalStorage(Storage):
         """
         self.ensure_dirs()
         file_path = paths.RAW_DIR / f"{name}.json"
+
+        # Prepare data for JSON serialization (handle list of dataclasses)
+        json_data = data
+        if isinstance(data, list) and data and is_dataclass(data[0]):
+            json_data = [asdict(item) for item in data]
+
         with open(file_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
+            json.dump(json_data, f, ensure_ascii=False, indent=2)
 
     def load_raw(self, name: str) -> Union[Dict[str, Any], List[Any]]:
         """
