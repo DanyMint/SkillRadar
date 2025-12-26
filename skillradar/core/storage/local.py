@@ -1,22 +1,26 @@
 """Local file system storage implementation."""
 import json
+from dataclasses import asdict
 from typing import Any, Dict, List, Union
 
+from ..normalize.models import NormalizedVacancy
 from . import paths
 from .base import Storage
 
 
 class LocalStorage(Storage):
     """
-    Stores data on the local file system as JSON files.
+    Stores pipeline artifacts (raw, normalized data, etc.) on the
+    local file system as JSON files.
     """
 
     def ensure_dirs(self) -> None:
         """
-        Creates the directory for raw data if it doesn't exist.
+        Creates the directories for all data types if they don't exist.
         The creation is recursive and suppresses errors if directories already exist.
         """
         paths.RAW_DIR.mkdir(parents=True, exist_ok=True)
+        paths.NORMALIZED_DIR.mkdir(parents=True, exist_ok=True)
 
     def save_raw(self, name: str, data: Union[Dict[str, Any], List[Any]]) -> None:
         """
@@ -51,3 +55,39 @@ class LocalStorage(Storage):
         file_path = paths.RAW_DIR / f"{name}.json"
         with open(file_path, "r", encoding="utf-8") as f:
             return json.load(f)
+
+    def save_normalized(self, name: str, data: List[NormalizedVacancy]) -> None:
+        """
+        Saves a list of normalized vacancies as a JSON file in the normalized
+        data directory.
+
+        The Pydantic models are converted to dictionaries before serialization.
+
+        Args:
+            name: The base name for the file. '.json' will be appended.
+            data: The list of NormalizedVacancy objects to save.
+        """
+        self.ensure_dirs()
+        file_path = paths.NORMALIZED_DIR / f"{name}.json"
+        with open(file_path, "w", encoding="utf-8") as f:
+            json_data = [asdict(vacancy) for vacancy in data]
+            json.dump(json_data, f, ensure_ascii=False, indent=2)
+
+    def load_normalized(self, name: str) -> List[NormalizedVacancy]:
+        """
+        Loads a JSON file from the normalized data directory into a list of
+        NormalizedVacancy objects.
+
+        Args:
+            name: The base name of the file to load.
+
+        Returns:
+            The loaded data as a list of NormalizedVacancy objects.
+
+        Raises:
+            FileNotFoundError: If the specified file does not exist.
+        """
+        file_path = paths.NORMALIZED_DIR / f"{name}.json"
+        with open(file_path, "r", encoding="utf-8") as f:
+            json_data = json.load(f)
+            return [NormalizedVacancy(**item) for item in json_data]

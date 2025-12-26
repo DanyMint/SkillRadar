@@ -2,10 +2,13 @@
 
 This module provides the Storage ABC, which declares the contract
 for all storage implementations. It ensures that any storage backend
-will have a consistent interface for saving and loading raw data.
+will have a consistent interface for saving and loading pipeline artifacts
+like raw and normalized data.
 """
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Union
+
+from ..normalize.models import NormalizedVacancy
 
 
 class Storage(ABC):
@@ -40,6 +43,33 @@ class Storage(ABC):
 
         Returns:
             The loaded Python object.
+
+        Raises:
+            FileNotFoundError: If the data with the given name does not exist.
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def save_normalized(self, name: str, data: List[NormalizedVacancy]) -> None:
+        """
+        Saves normalized data to the storage.
+
+        Args:
+            name: A unique identifier for the data.
+            data: A list of NormalizedVacancy objects to be stored.
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def load_normalized(self, name: str) -> List[NormalizedVacancy]:
+        """
+        Loads normalized data from the storage.
+
+        Args:
+            name: The unique identifier for the data to load.
+
+        Returns:
+            A list of NormalizedVacancy objects.
 
         Raises:
             FileNotFoundError: If the data with the given name does not exist.

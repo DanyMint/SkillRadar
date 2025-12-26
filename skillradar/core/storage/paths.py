@@ -14,3 +14,6 @@ DATA_DIR: Path = APP_DIR / "data"
 
 # ~/.skillradar/data/raw
 RAW_DIR: Path = DATA_DIR / "raw"
+
+# ~/.skillradar/data/normalized
+NORMALIZED_DIR: Path = DATA_DIR / "normalized"

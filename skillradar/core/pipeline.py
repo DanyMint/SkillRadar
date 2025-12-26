@@ -30,5 +30,8 @@ class Pipeline:
                 print(f"Error normalizing vacancy {raw_vacancy.get('id')}: {e}")
                 # Optionally, log the error or handle it differently
 
+        # Сохраняем нормализованные данные
+        self.storage.save_normalized(file_name, normalized_vacancies)
+
         # TODO: дальше будут extract, analyze
         return normalized_vacancies
