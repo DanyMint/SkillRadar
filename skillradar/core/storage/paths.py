@@ -17,3 +17,9 @@ RAW_DIR: Path = DATA_DIR / "raw"
 
 # ~/.skillradar/data/normalized
 NORMALIZED_DIR: Path = DATA_DIR / "normalized"
+
+# ~/.skillradar/data/analysis
+ANALYSIS_DIR: Path = DATA_DIR / "analysis"
+
+# ~/.skillradar/data/extraction
+EXTRACTION_DIR: Path = DATA_DIR / "extraction"

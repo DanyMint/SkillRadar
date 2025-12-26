@@ -8,6 +8,8 @@ like raw and normalized data.
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Union
 
+from ..analysis.models import AnalysisResult
+from ..extract.models import ExtractionResult
 from ..normalize.models import NormalizedVacancy
 
 
@@ -73,5 +75,19 @@ class Storage(ABC):
 
         Raises:
             FileNotFoundError: If the data with the given name does not exist.
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def save_analysis(self, result: AnalysisResult) -> None:
+        """
+        Saves the result of a single vacancy analysis.
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def save_extraction(self, result: ExtractionResult) -> None:
+        """
+        Saves the result of a single vacancy skill extraction.
         """
         raise NotImplementedError

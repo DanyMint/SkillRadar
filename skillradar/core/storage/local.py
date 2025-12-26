@@ -3,6 +3,8 @@ import json
 from dataclasses import asdict, is_dataclass
 from typing import Any, Dict, List, Union
 
+from ..analysis.models import AnalysisResult
+from ..extract.models import ExtractionResult
 from ..normalize.models import NormalizedVacancy
 from . import paths
 from .base import Storage
@@ -21,6 +23,8 @@ class LocalStorage(Storage):
         """
         paths.RAW_DIR.mkdir(parents=True, exist_ok=True)
         paths.NORMALIZED_DIR.mkdir(parents=True, exist_ok=True)
+        paths.ANALYSIS_DIR.mkdir(parents=True, exist_ok=True)
+        paths.EXTRACTION_DIR.mkdir(parents=True, exist_ok=True)
 
     def save_raw(self, name: str, data: Union[Dict[str, Any], List[Any]]) -> None:
         """
@@ -100,3 +104,27 @@ class LocalStorage(Storage):
         with open(file_path, "r", encoding="utf-8") as f:
             json_data = json.load(f)
             return [NormalizedVacancy(**item) for item in json_data]
+
+    def save_analysis(self, result: AnalysisResult) -> None:
+        """
+        Saves an analysis result as a JSON file named after the vacancy ID.
+
+        Args:
+            result: The AnalysisResult object to save.
+        """
+        self.ensure_dirs()
+        file_path = paths.ANALYSIS_DIR / f"{result.vacancy_id}.json"
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(asdict(result), f, ensure_ascii=False, indent=2)
+
+    def save_extraction(self, result: ExtractionResult) -> None:
+        """
+        Saves an extraction result as a JSON file named after the vacancy ID.
+
+        Args:
+            result: The ExtractionResult object to save.
+        """
+        self.ensure_dirs()
+        file_path = paths.EXTRACTION_DIR / f"{result.vacancy_id}.json"
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(asdict(result), f, ensure_ascii=False, indent=2)
