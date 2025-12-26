@@ -31,7 +31,27 @@ skillradar
 Currently, the application is in the early stages of development and the main entry point `skillradar/cli/main.py` is not fully implemented.
 
 **Running tests:**
-There are no tests in the project yet.
+Please refer to the "Code Quality and Testing" section below for instructions on running tests.
+
+## Code Quality and Testing
+
+To ensure code quality and correctness, please run the following commands regularly:
+
+**1. Linting and Formatting (Ruff):**
+```bash
+uv run ruff check .
+uv run ruff check . --fix # To automatically fix fixable issues
+```
+
+**2. Type Checking (Ty):**
+```bash
+uv run ty check .
+```
+
+**3. Running Tests (Pytest):**
+```bash
+uv run pytest
+```
 
 ## Development Conventions
 
